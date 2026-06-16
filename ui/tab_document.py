@@ -1,7 +1,7 @@
 """
 Onglet Document :
   - Chargement du fichier Excel
-  - Réorganisation des feuilles par drag & drop
+  - Réorganisation des feuilles par drag and drop
   - Inclusion / exclusion sélective
   - Modification du titre et du sous-titre de page de garde
   - Renommage de l'affichage de chaque page (display_name)
@@ -66,7 +66,7 @@ class SheetListItem(QWidget):
 
 
 class DraggableList(QListWidget):
-    """QListWidget avec drag & drop interne pour réordonner."""
+    """QListWidget avec drag et drop interne pour réordonner."""
 
     order_changed = pyqtSignal(list)
 

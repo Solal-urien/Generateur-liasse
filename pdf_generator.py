@@ -70,6 +70,7 @@ class TableStyleParams:
 
 @dataclass
 class PageParams:
+    table_styles: dict[str, TableStyleParams] = field(default_factory=dict)
     font_size:        float = 9.0
     margin_top:       float = 15.0
     margin_bottom:    float = 15.0
@@ -78,7 +79,10 @@ class PageParams:
     show_sheet_title: bool  = True
     orientation:      str   = "portrait"
     sheet_title:      str | None = None
-    table_styles: dict[str, TableStyleParams] = field(default_factory=dict)
+    primary_color:    str | None = None
+    accent_color:     str | None = None
+    complement_color: str | None = None
+    row_alt_color:    str | None = None
 
 
 # ── SheetSettings ──────────────────────────────────────────────────────────
@@ -500,11 +504,11 @@ def generate_pdf(
 
                 tsp = pp.table_styles.get(tz.name, TableStyleParams())
 
-                tbl_primary    = _hex_to_rl(tsp.primary_color)     if tsp.primary_color     else primary_color
-                tbl_complement = _hex_to_rl(tsp.complement_color)  if tsp.complement_color  else complement_color
-                tbl_alt        = _hex_to_rl(tsp.row_alt_color)     if tsp.row_alt_color     else None
-                tbl_hdr_txt    = _hex_to_rl(tsp.header_text_color) if tsp.header_text_color else None
-                tbl_body_txt   = _hex_to_rl(tsp.body_text_color)   if tsp.body_text_color   else None
+                tbl_primary = _hex_to_rl(tsp.primary_color) if tsp.primary_color else _hex_to_rl(pp.primary_color) if pp.primary_color else primary_color
+                tbl_complement = _hex_to_rl(tsp.complement_color) if tsp.complement_color else _hex_to_rl(pp.complement_color) if pp.complement_color else complement_color
+                tbl_alt = _hex_to_rl(tsp.row_alt_color) if tsp.row_alt_color else _hex_to_rl(pp.row_alt_color) if pp.row_alt_color else None
+                tbl_hdr_txt = _hex_to_rl(tsp.header_text_color) if tsp.header_text_color else None
+                tbl_body_txt = _hex_to_rl(tsp.body_text_color) if tsp.body_text_color else None
 
                 section_para = Paragraph(tz.name, section_style)
                 tbl = make_rl_table(

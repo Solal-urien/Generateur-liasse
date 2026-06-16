@@ -120,8 +120,8 @@ class ChartsTab(QWidget):
 
         form_layout.addWidget(grp_source)
 
-        # ── Type & apparence ──
-        grp_appearance = QGroupBox("Type & apparence")
+        # ── Type et apparence ──
+        grp_appearance = QGroupBox("Type et apparence")
         app_layout = QVBoxLayout(grp_appearance)
         app_layout.setSpacing(8)
 

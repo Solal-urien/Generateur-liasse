@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBut
     QSizePolicy, QLineEdit, QScrollArea, QFrame)
 
 from state_manager import state_manager
-from pdf_generator import PageParams
+from pdf_generator import PageParams, TableStyleParams
 from util import ColorButton
 
 
@@ -105,9 +105,8 @@ class PageTab(QWidget):
             colors_layout.addLayout(row)
             setattr(self, f"_chk_{attr_name}", chk)
             setattr(self, f"_btn_{attr_name}", btn)
-        # TODO ajouter la possibilité des lignes du tableau à accentuer
         _color_row("Surcharger la couleur principale",   _DEFAULT_PRIMARY,  "primary")
-        _color_row("Surcharger la couleur des sous-titres",        _DEFAULT_ACCENT,   "accent")
+        #_color_row("Surcharger la couleur des sous-titres",        _DEFAULT_ACCENT,   "accent")
         _color_row("Surcharger la couleur complémentaire", _DEFAULT_COMP,      "comp")
         _color_row("Surcharger la couleur lignes alternées", _DEFAULT_ALT,   "alt")
         # _color_row("Surcharger le texte en-tête tableau", _DEFAULT_HDR_TEXT, "hdr_text")
@@ -131,7 +130,7 @@ class PageTab(QWidget):
         self._spin_font.setRange(5, 28)
         self._spin_font.setValue(9)
         self._spin_font.setSuffix(" pt")
-        self._spin_font.setSingleStep(0.5)
+        self._spin_font.setSingleStep(0.25)
         self._spin_font.valueChanged.connect(self._push_to_state)
         row_fs.addStretch()
         row_fs.addWidget(self._spin_font)
@@ -145,8 +144,7 @@ class PageTab(QWidget):
         mg_layout.setSpacing(8)
 
         self._spins_margin: dict[str, QDoubleSpinBox] = {}
-        for label, key in [("Haut", "top"), ("Bas", "bottom"),
-                            ("Gauche", "left"), ("Droite", "right")]:
+        for label, key in [("Gauche", "left"), ("Droite", "right")]:
             row = QHBoxLayout()
             row.addWidget(QLabel(f"{label} :"))
             spin = QDoubleSpinBox()
@@ -190,14 +188,14 @@ class PageTab(QWidget):
     def _set_controls_enabled(self, enabled: bool):
         for w in [self._spin_font, self._chk_title,
                   self._edit_sheet_title,
-                  self._chk_primary, self._chk_accent, self._chk_alt, self._chk_comp,
+                  self._chk_primary, self._chk_alt, self._chk_comp,
                 # self._chk_hdr_text, self._chk_body_text
                   ]:
             w.setEnabled(enabled)
         for spin in self._spins_margin.values():
             spin.setEnabled(enabled)
         # Les boutons couleur suivent l'etat de leur checkbox associee
-        for attr in ("primary", "accent", "comp", "alt"):
+        for attr in ("primary", "comp", "alt"):
             chk: QCheckBox = getattr(self, f"_chk_{attr}")
             btn: ColorButton = getattr(self, f"_btn_{attr}")
             btn.setEnabled(enabled and chk.isChecked())
@@ -205,7 +203,7 @@ class PageTab(QWidget):
     def _reset_colors(self):
         """Desactive toutes les surcharges de couleur pour la feuille courante."""
         self._loading = True
-        for attr in ("primary", "accent", "comp", "alt"):
+        for attr in ("primary", "comp", "alt"):
             chk: QCheckBox = getattr(self, f"_chk_{attr}")
             btn: ColorButton = getattr(self, f"_btn_{attr}")
             chk.setChecked(False)
@@ -241,17 +239,17 @@ class PageTab(QWidget):
 
         pp = state_manager.gparams.page_params.get(sheet_name, PageParams())
 
-        # Titre personnalise
+        # Titre personnalisé
         self._edit_sheet_title.setText(pp.sheet_title or "")
 
-        # Couleurs par page
+        # Couleurs par page (directement depuis PageParams)
         for attr, field_name, default in [
             ("primary",   "primary_color",     _DEFAULT_PRIMARY),
-            ("accent",    "accent_color",       _DEFAULT_ACCENT),
-            ("comp",     "complement_color",        _DEFAULT_COMP),
-            ("alt",       "row_alt_color",      _DEFAULT_ALT),
+            # ("accent",    "accent_color",      _DEFAULT_ACCENT),
+            ("comp",      "complement_color",  _DEFAULT_COMP),
+            ("alt",       "row_alt_color",     _DEFAULT_ALT),
         ]:
-            chk: QCheckBox  = getattr(self, f"_chk_{attr}")
+            chk: QCheckBox = getattr(self, f"_chk_{attr}")
             btn: ColorButton = getattr(self, f"_btn_{attr}")
             val = getattr(pp, field_name, None)
             has_override = bool(val)
@@ -263,8 +261,6 @@ class PageTab(QWidget):
         self._spin_font.setValue(pp.font_size)
 
         # Marges
-        self._spins_margin["top"].setValue(pp.margin_top)
-        self._spins_margin["bottom"].setValue(pp.margin_bottom)
         self._spins_margin["left"].setValue(pp.margin_left)
         self._spins_margin["right"].setValue(pp.margin_right)
 
@@ -279,22 +275,21 @@ class PageTab(QWidget):
             return
 
         def _opt_color(attr: str) -> str | None:
-            chk: QCheckBox   = getattr(self, f"_chk_{attr}")
+            chk: QCheckBox = getattr(self, f"_chk_{attr}")
             btn: ColorButton = getattr(self, f"_btn_{attr}")
             return btn.color() if chk.isChecked() else None
 
         pp = PageParams(
             font_size=self._spin_font.value(),
-            margin_top=self._spins_margin["top"].value(),
-            margin_bottom=self._spins_margin["bottom"].value(),
             margin_left=self._spins_margin["left"].value(),
             margin_right=self._spins_margin["right"].value(),
             show_sheet_title=self._chk_title.isChecked(),
             sheet_title=self._edit_sheet_title.text().strip() or None,
             primary_color=_opt_color("primary"),
-            accent_color=_opt_color("accent"),
+            # accent_color=_opt_color("accent"),
             complement_color=_opt_color("comp"),
             row_alt_color=_opt_color("alt"),
+            table_styles=state_manager.gparams.page_params.get(self._current_sheet, PageParams()).table_styles,
         )
         state_manager.update_page_params(self._current_sheet, pp)
 

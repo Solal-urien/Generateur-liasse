@@ -50,25 +50,19 @@ class RowStyleWidget(QWidget):
         layout.setContentsMargins(4, 2, 4, 2)
         layout.setSpacing(6)
 
-        # Numéro + libellé de la ligne
-        idx_lbl = QLabel(f"{row_index + 1}.")
-        idx_lbl.setFixedWidth(24)
-        idx_lbl.setStyleSheet("color: #7891C7; font-size: 10px;")
-        layout.addWidget(idx_lbl)
-
+        # Libellé de la ligne (on tronque si trop long)
         name_lbl = QLabel(label)
-        name_lbl.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        name_lbl.setFixedWidth(60)
         name_lbl.setToolTip(label)
-        # Tronquer si trop long
         fm = name_lbl.fontMetrics()
-        elided = fm.elidedText(label, Qt.TextElideMode.ElideRight, 130)
+        elided = fm.elidedText(label, Qt.TextElideMode.ElideRight, 60) 
         name_lbl.setText(elided)
         layout.addWidget(name_lbl)
 
         # Visible
-        self._chk_visible = QCheckBox("Affiché")
+        self._chk_visible = QCheckBox("")
         self._chk_visible.setChecked(True)
-        self._chk_visible.setFixedWidth(70)
+        self._chk_visible.setFixedWidth(40)
         layout.addWidget(self._chk_visible)
 
         # Couleur de fond
@@ -87,23 +81,23 @@ class RowStyleWidget(QWidget):
         self._spin_size.setRange(5, 20)
         self._spin_size.setValue(9)
         self._spin_size.setSuffix("pt")
-        self._spin_size.setSpecialValueText("Hériter")
-        self._spin_size.setMinimum(0)          # 0 = hériter
+        self._spin_size.setSpecialValueText("N.A") # On hérite du global
+        self._spin_size.setMinimum(0)          
         self._spin_size.setFixedWidth(72)
         layout.addWidget(self._spin_size)
 
         # Format numérique
-        self._combo_fmt = QComboBox()
-        self._combo_fmt.addItems(["Normal", "%"])
-        self._combo_fmt.setFixedWidth(56)
-        layout.addWidget(self._combo_fmt)
+        self._chk_percent = QCheckBox("")
+        self._chk_percent.setToolTip("Afficher au format %")
+        self._chk_percent.setFixedWidth(40)
+        layout.addWidget(self._chk_percent)
 
         # Décimales
         self._spin_dec = QSpinBox()
         self._spin_dec.setRange(0, 3)
         self._spin_dec.setValue(1)
         self._spin_dec.setPrefix(".")
-        self._spin_dec.setFixedWidth(44)
+        self._spin_dec.setFixedWidth(60)
         self._spin_dec.setToolTip("Nombre de décimales")
         layout.addWidget(self._spin_dec)
 
@@ -112,7 +106,7 @@ class RowStyleWidget(QWidget):
         self._btn_color.clicked.connect(self._emit)
         self._combo_style.currentIndexChanged.connect(self._emit)
         self._spin_size.valueChanged.connect(self._emit)
-        self._combo_fmt.currentIndexChanged.connect(self._emit)
+        self._chk_percent.stateChanged.connect(self._emit)
         self._spin_dec.valueChanged.connect(self._emit)
 
         if rs is not None:
@@ -127,7 +121,7 @@ class RowStyleWidget(QWidget):
         style_map = {"normal": 0, "bold": 1, "italic": 2}
         self._combo_style.setCurrentIndex(style_map.get(rs.text_style, 0))
         self._spin_size.setValue(rs.font_size if rs.font_size is not None else 0)
-        self._combo_fmt.setCurrentIndex(1 if rs.number_format == "percent" else 0)
+        self._chk_percent.setChecked(rs.number_format == "percent")
         self._spin_dec.setValue(rs.decimal_places)
         self._loading = False
 
@@ -141,7 +135,7 @@ class RowStyleWidget(QWidget):
             background_color = bg,
             text_style       = style_map[self._combo_style.currentIndex()],
             font_size        = sz if sz > 0 else None,
-            number_format    = "percent" if self._combo_fmt.currentIndex() == 1 else "normal",
+            number_format    = "percent" if self._chk_percent.isChecked() else "normal",
             decimal_places   = self._spin_dec.value(),
         )
 
@@ -217,8 +211,8 @@ class LineTab(QWidget):
         hdr_layout = QHBoxLayout(hdr)
         hdr_layout.setContentsMargins(4, 0, 4, 0)
         hdr_layout.setSpacing(6)
-        for lbl, w in [("#", 24), ("Libellé", 130), ("Affiché", 70), ("Fond", 40),
-                        ("Style", 80), ("Taille", 72), ("Format", 56), ("Déc.", 44)]:
+        for lbl, w in [("Libellé", 60), ("Affiché", 40), ("Fond", 40),
+                ("Style", 80), ("Taille", 72), ("Format %", 40), ("Décimales", 60)]:
             l = QLabel(lbl)
             l.setFixedWidth(w) if w > 0 else l.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
             l.setStyleSheet("color: #385188; font-size: 10px; font-weight: 600;")

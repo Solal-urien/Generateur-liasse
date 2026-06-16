@@ -309,8 +309,8 @@ def make_rl_table(
         ("VALIGN",         (0, 0), (-1, -1), "MIDDLE"),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, eff_alt]),
         ("GRID",           (0, 1), (-1, -1), 0.3, colors.Color(0.7, 0.7, 0.7)),
-        ("TOPPADDING",     (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING",  (0, 0), (-1, -1), 3),
+        # ("TOPPADDING",     (0, 0), (-1, -1), 3),
+        # ("BOTTOMPADDING",  (0, 0), (-1, -1), 3),
         ("LEFTPADDING",    (0, 0), (-1, -1), 5),
         ("RIGHTPADDING",   (0, 0), (-1, -1), 5),
     ]

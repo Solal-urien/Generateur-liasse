@@ -31,6 +31,8 @@ from pdf_generator  import RowStyle
 from pdf_table_maker import detect_year_row_index
 from util import ColorButton
 
+WIDTH_COLUMN_WIDGET = [60, 35, 35, 70, 70, 45, 60]
+
 
 # ── Widget d'une ligne éditable ────────────────────────────────────────────
 
@@ -52,28 +54,29 @@ class RowStyleWidget(QWidget):
 
         # Libellé de la ligne (on tronque si trop long)
         name_lbl = QLabel(label)
-        name_lbl.setFixedWidth(60)
+        name_lbl.setFixedWidth(WIDTH_COLUMN_WIDGET[0])
         name_lbl.setToolTip(label)
         fm = name_lbl.fontMetrics()
-        elided = fm.elidedText(label, Qt.TextElideMode.ElideRight, 60) 
+        elided = fm.elidedText(label, Qt.TextElideMode.ElideRight, WIDTH_COLUMN_WIDGET[0]) 
         name_lbl.setText(elided)
         layout.addWidget(name_lbl)
 
         # Visible
         self._chk_visible = QCheckBox("")
         self._chk_visible.setChecked(True)
-        self._chk_visible.setFixedWidth(40)
+        self._chk_visible.setFixedWidth(WIDTH_COLUMN_WIDGET[1])
         layout.addWidget(self._chk_visible)
 
         # Couleur de fond
         self._btn_color = ColorButton("#FFFFFF")
         self._btn_color.setToolTip("Couleur de fond (blanc = défaut)")
+        self._btn_color.setFixedWidth(WIDTH_COLUMN_WIDGET[2])
         layout.addWidget(self._btn_color)
 
         # Style texte
         self._combo_style = QComboBox()
         self._combo_style.addItems(["Normal", "Gras", "Italique"])
-        self._combo_style.setFixedWidth(80)
+        self._combo_style.setFixedWidth(WIDTH_COLUMN_WIDGET[3])
         layout.addWidget(self._combo_style)
 
         # Taille police
@@ -83,21 +86,20 @@ class RowStyleWidget(QWidget):
         self._spin_size.setSuffix("pt")
         self._spin_size.setSpecialValueText("N.A") # On hérite du global
         self._spin_size.setMinimum(0)          
-        self._spin_size.setFixedWidth(72)
+        self._spin_size.setFixedWidth(WIDTH_COLUMN_WIDGET[4])
         layout.addWidget(self._spin_size)
 
         # Format numérique
         self._chk_percent = QCheckBox("")
         self._chk_percent.setToolTip("Afficher au format %")
-        self._chk_percent.setFixedWidth(40)
+        self._chk_percent.setFixedWidth(WIDTH_COLUMN_WIDGET[5])
         layout.addWidget(self._chk_percent)
 
         # Décimales
         self._spin_dec = QSpinBox()
         self._spin_dec.setRange(0, 3)
         self._spin_dec.setValue(1)
-        self._spin_dec.setPrefix(".")
-        self._spin_dec.setFixedWidth(60)
+        self._spin_dec.setFixedWidth(WIDTH_COLUMN_WIDGET[6])
         self._spin_dec.setToolTip("Nombre de décimales")
         layout.addWidget(self._spin_dec)
 
@@ -211,8 +213,8 @@ class LineTab(QWidget):
         hdr_layout = QHBoxLayout(hdr)
         hdr_layout.setContentsMargins(4, 0, 4, 0)
         hdr_layout.setSpacing(6)
-        for lbl, w in [("Libellé", 60), ("Affiché", 40), ("Fond", 40),
-                ("Style", 80), ("Taille", 72), ("Format %", 40), ("Décimales", 60)]:
+        for lbl, w in [("Libellé", WIDTH_COLUMN_WIDGET[0]), ("Affiché", WIDTH_COLUMN_WIDGET[1]), ("Fond", WIDTH_COLUMN_WIDGET[2]),
+                ("Style", WIDTH_COLUMN_WIDGET[3]), ("Taille", WIDTH_COLUMN_WIDGET[4]), ("Format %", WIDTH_COLUMN_WIDGET[5]), ("Décimales", WIDTH_COLUMN_WIDGET[6])]:
             l = QLabel(lbl)
             l.setFixedWidth(w) if w > 0 else l.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
             l.setStyleSheet("color: #385188; font-size: 10px; font-weight: 600;")
@@ -226,17 +228,31 @@ class LineTab(QWidget):
         self._rows_layout.setSpacing(2)
         self._inner_layout.addWidget(self._rows_container)
 
+        # ── Encadré des paramètres globaux ──
+        self._global_params_group = QGroupBox("Paramètres à appliquer")
+        global_params_layout = QVBoxLayout(self._global_params_group)
+
+        # Ligne de paramètres globaux
+        global_row_widget = RowStyleWidget(-1, "Paramètres globaux", RowStyle())
+        global_row_widget.setToolTip("Configurez les paramètres à appliquer aux lignes.")
+        self._global_row_widget = global_row_widget
+        global_params_layout.addWidget(global_row_widget)
+
         # ── Boutons ──
         btn_bar = QHBoxLayout()
         btn_apply_all = QPushButton("↕  Appliquer à toutes les lignes (hors années)")
         btn_apply_all.setObjectName("secondary")
         btn_apply_all.clicked.connect(self._apply_to_all)
-        btn_reset = QPushButton("↺  Réinitialiser toutes les lignes")
-        btn_reset.setObjectName("secondary")
-        btn_reset.clicked.connect(self._reset_all)
+
+        btn_apply_every_other = QPushButton("↕  Appliquer à une ligne sur deux")
+        btn_apply_every_other.setObjectName("secondary")
+        btn_apply_every_other.clicked.connect(self._apply_to_every_other)
+
         btn_bar.addWidget(btn_apply_all)
-        btn_bar.addWidget(btn_reset)
-        self._inner_layout.addLayout(btn_bar)
+        btn_bar.addWidget(btn_apply_every_other)
+        global_params_layout.addLayout(btn_bar)
+
+        self._inner_layout.addWidget(self._global_params_group)
 
         self._inner_layout.addStretch()
         scroll.setWidget(inner)
@@ -349,60 +365,50 @@ class LineTab(QWidget):
     def _on_row_changed(self, data_idx: int):
         if not self._current_sheet or not self._current_table:
             return
-        # Trouver le widget
         widget = next((w for di, w in self._row_widgets if di == data_idx), None)
         if widget is None:
             return
         tsp = state_manager.get_table_style(self._current_sheet, self._current_table)
-        rs  = widget.get_row_style()
-        # Ne conserver que si différent du RowStyle par défaut (évite le gonflement)
-        default = RowStyle()
-        if (rs.visible == default.visible
-                and rs.background_color == default.background_color
-                and rs.text_style == default.text_style
-                and rs.font_size == default.font_size
-                and rs.number_format == default.number_format
-                and rs.decimal_places == default.decimal_places):
-            tsp.row_styles.pop(data_idx, None)
-        else:
-            tsp.row_styles[data_idx] = rs
+        rs = widget.get_row_style()
+        # Toujours conserver les modifications explicites
+        tsp.row_styles[data_idx] = rs
         state_manager.update_table_style(self._current_sheet, self._current_table, tsp)
 
     def _apply_to_all(self):
         """
-        Copie les paramètres de toutes les lignes éditables (hors subheader années)
-        vers les mêmes index dans ce tableau.
-        Plus précisément : copie chaque RowStyle individuel depuis le tableau courant
-        vers le même index dans tous les autres tableaux du workbook qui ont
-        suffisamment de lignes.
+        Applique les paramètres globaux à toutes les lignes éditables
+        (hors subheader années) du tableau courant.
         """
         if not self._current_sheet or not self._current_table:
             return
-        tsp_src = state_manager.get_table_style(self._current_sheet, self._current_table)
 
-        # Styles à copier : tout sauf le subheader années
-        styles_to_copy = {
-            di: rs for di, rs in tsp_src.row_styles.items()
-            if di != self._year_row_index
-        }
+        global_style = self._global_row_widget.get_row_style()
+        tsp = state_manager.get_table_style(self._current_sheet, self._current_table)
 
-        wb = state_manager.workbook
-        if not wb:
+        for data_idx, _ in self._row_widgets:
+            if data_idx != self._year_row_index:  # Exclure le subheader années
+                tsp.row_styles[data_idx] = copy.copy(global_style)
+
+        state_manager.update_table_style(self._current_sheet, self._current_table, tsp)
+        self._rebuild_rows()
+
+    def _apply_to_every_other(self):
+        """
+        Applique les paramètres globaux à une ligne sur deux (hors subheader années)
+        dans le tableau courant.
+        """
+        if not self._current_sheet or not self._current_table:
             return
 
-        for sheet in wb.sheets:
-            for tz in sheet.tables:
-                if sheet.name == self._current_sheet and tz.name == self._current_table:
-                    continue  # on ne recopie pas sur soi-même
-                tsp = state_manager.get_table_style(sheet.name, tz.name)
-                yr_idx = detect_year_row_index(tz)
+        global_style = self._global_row_widget.get_row_style()
+        tsp = state_manager.get_table_style(self._current_sheet, self._current_table)
 
-                for di, rs in styles_to_copy.items():
-                    # Ne copier que si la ligne existe dans ce tableau
-                    if di < len(tz.data) and di != yr_idx:
-                        tsp.row_styles[di] = copy.copy(rs)
+        for data_idx, _ in self._row_widgets:
+            if data_idx != self._year_row_index and data_idx % 2 == 0:  # Une ligne sur deux
+                tsp.row_styles[data_idx] = copy.copy(global_style)
 
-                state_manager.update_table_style(sheet.name, tz.name, tsp)
+        state_manager.update_table_style(self._current_sheet, self._current_table, tsp)
+        self._rebuild_rows()
 
     def _reset_all(self):
         """Supprime tous les RowStyle du tableau courant (hors subheader années)."""

@@ -105,9 +105,8 @@ NUANCIER_COULEURS = {
         "#CF3D3D",  # Rouge
         "#E28B8B",  # Rose
         "#ECB1B1",  # Rose pâle
-        "#F5D8D8"   # Rose très pâle
+        "#F5D8D8",   # Rose très pâle
         "#FFFFFF"   # Blanc
-
     ],
     "Couleurs complémentaires": [
         "#EBA039",  # Orange clair

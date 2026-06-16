@@ -142,29 +142,6 @@ class DocumentTab(QWidget):
         years_layout.addWidget(self._spin_year)
         layout.addWidget(grp_years)
 
-        # ── Page de garde ──
-        grp_cover = QGroupBox("Page de garde")
-        cover_layout = QVBoxLayout(grp_cover)
-        cover_layout.setSpacing(6)
-
-        row_title = QHBoxLayout()
-        row_title.addWidget(QLabel("Titre :"))
-        self._title_edit = QLineEdit()
-        self._title_edit.setPlaceholderText("Titre de la liasse")
-        self._title_edit.textChanged.connect(self._on_title_changed)
-        row_title.addWidget(self._title_edit)
-        cover_layout.addLayout(row_title)
-
-        row_author = QHBoxLayout()
-        row_author.addWidget(QLabel("Sous-titre :"))
-        self._author_edit = QLineEdit()
-        self._author_edit.setPlaceholderText("BEE, BEH…")
-        self._author_edit.textChanged.connect(self._on_author_changed)
-        row_author.addWidget(self._author_edit)
-        cover_layout.addLayout(row_author)
-
-        layout.addWidget(grp_cover)
-
         # ── Liste des feuilles ──
         grp_sheets = QGroupBox("Feuilles (glisser pour réordonner)")
         sheets_layout = QVBoxLayout(grp_sheets)
@@ -274,15 +251,6 @@ class DocumentTab(QWidget):
             item.setSizeHint(widget.sizeHint())
             self._list.setItemWidget(item, widget)
 
-        # Pré-remplir titre/auteur
-        gp = state_manager.gparams
-        self._title_edit.blockSignals(True)
-        self._author_edit.blockSignals(True)
-        self._title_edit.setText(getattr(gp, "doc_title",  ""))
-        self._author_edit.setText(getattr(gp, "doc_author", ""))
-        self._title_edit.blockSignals(False)
-        self._author_edit.blockSignals(False)
-
         self._building = False
 
         # Restaurer la sélection courante si elle existe encore
@@ -358,14 +326,6 @@ class DocumentTab(QWidget):
     def _on_order_changed(self, names: list[str]):
         if not self._building:
             state_manager.update_sheet_order(names)
-
-    def _on_title_changed(self, text: str):
-        if not self._building:
-            state_manager.set_doc_title(text)
-
-    def _on_author_changed(self, text: str):
-        if not self._building:
-            state_manager.set_doc_author(text)
 
     def _on_display_name_changed(self, text: str):
         if not self._building and self._current_sheet:

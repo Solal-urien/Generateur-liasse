@@ -2,6 +2,9 @@
 
 from typing import Any
 
+from PyQt6.QtWidgets import QPushButton, QColorDialog, QMenu, QWidgetAction
+from PyQt6.QtGui import QColor, QIcon, QPixmap
+
 def is_year_like(value: Any) -> bool:
     """ Détecte si une valeur ressemble à une année (1900-2100), pour aider à filtrer les colonnes d'années."""
     if isinstance(value, bool):
@@ -14,6 +17,74 @@ def is_year_like(value: Any) -> bool:
         s = value.strip()
         return s.isdigit() and len(s) == 4 and 1900 <= int(s) <= 2100
     return False
+
+# ── ColorButton ────────────────────────────────────────────────────────────
+
+class ColorButton(QPushButton):
+    """Bouton qui affiche et permet de choisir une couleur hex parmi un nuancier ou via un sélecteur."""
+
+    def __init__(self, hex_color: str = "#1a3a5c", parent=None):
+        super().__init__(parent)
+        self._color = hex_color
+        self._refresh_style()
+        self.setFixedSize(36, 28)
+        self.clicked.connect(self._show_color_menu)
+
+    def _refresh_style(self):
+        r, g, b = self._hex_to_rgb(self._color)
+        luminance = 0.299 * r + 0.587 * g + 0.114 * b
+        text_color = "#ffffff" if luminance < 128 else "#000000"
+        self.setStyleSheet(
+            f"background-color: {self._color}; color: {text_color}; "
+            f"border: 1px solid #aabbcc; border-radius: 4px; font-size: 9px;"
+        )
+        self.setText(self._color.upper())
+
+    def _show_color_menu(self):
+        menu = QMenu(self)
+        menu.setStyleSheet(
+            "QMenu { background-color: #1C2844; color: #ffffff; border: 1px solid #4a5d7a; }"
+            "QMenu::item { background-color: transparent; }"
+            "QMenu::item:selected { background-color: #2e7bc4; }"
+            "QMenu::separator { height: 1px; background: #4a5d7a; margin: 4px 8px; }"
+        )
+        for category, cat_colors in NUANCIER_COULEURS.items():
+            cat_menu = menu.addMenu(category)
+            cat_menu.setStyleSheet(menu.styleSheet())
+            for color in cat_colors:
+                action = QWidgetAction(cat_menu)
+                pixmap = QPixmap(20, 20)
+                pixmap.fill(QColor(color))
+                action.setIcon(QIcon(pixmap))
+                action.setData(color)
+                action.triggered.connect(lambda _, c=color: self._set_color(c))
+                cat_menu.addAction(action)
+
+        custom = menu.addAction("Couleur personnalisée…")
+        custom.triggered.connect(self._pick_custom_color)
+        menu.exec(self.mapToGlobal(self.rect().bottomLeft()))
+
+    def _pick_custom_color(self):
+        dlg = QColorDialog(QColor(self._color), self)
+        if dlg.exec():
+            self._set_color(dlg.selectedColor().name())
+
+    def _set_color(self, hex_color: str):
+        self._color = hex_color
+        self._refresh_style()
+        self.clicked.emit()
+
+    def color(self) -> str:
+        return self._color
+
+    def set_color(self, hex_color: str):
+        self._color = hex_color
+        self._refresh_style()
+
+    @staticmethod
+    def _hex_to_rgb(h: str):
+        h = h.lstrip("#")
+        return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
 
 # Palette de couleurs inspirée du nuancier
 NUANCIER_COULEURS = {
@@ -93,9 +164,9 @@ mapping_fipu2 = {"Intro": { "zones": [{"name": "Tableau introductif", "range": "
                 "2.1. Tableau principal PO RFN" : { "zones": [{"name": "Niveaux", "range": "D5:AF12"},
                                                               {"name": "Elasticités", "range": "D15:AF21"},
                                                               {"name": "Généralités", "range": "D23:Q27"},
-                                                              {"name": "MN", "range": "D29:AF35"},
-                                                              {"name": "% spontanée", "range": "D38:AF44"},
-                                                              {"name": "Ecart à l'unité", "range": "D47:AF53"},
+                                                              {"name": "MN", "range": "D29:AF36"},
+                                                              {"name": "% spontanée", "range": "D38:AF45"},
+                                                              {"name": "Ecart à l'unité", "range": "D47:AF54"},
                                                               ]},
                 "2.2 Evolution du taux de PO" : { "zones": [{"name": "2.2.1 D'une année à l'autre", "range": "D5:M10"},
                                                             {"name": "2.2.2 En cumul depuis 2019", "range": "D14:M18"},

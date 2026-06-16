@@ -8,88 +8,10 @@ Onglet Style :
     (TableStyleParams) soit correctement appliquée à l'affichage en page de garde.
 """
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QGroupBox, QCheckBox, QDoubleSpinBox, QComboBox,
-    QColorDialog, QMenu, QWidgetAction,
 )
-from PyQt6.QtGui import QColor, QIcon, QPixmap
-
 from state_manager import state_manager
-from util import NUANCIER_COULEURS
-
-try:
-    from reportlab.platypus import Table
-except Exception:
-    Table = None
-
-
-# ── ColorButton ────────────────────────────────────────────────────────────
-
-class ColorButton(QPushButton):
-    """Bouton qui affiche et permet de choisir une couleur hex parmi un nuancier ou via un sélecteur."""
-
-    def __init__(self, hex_color: str = "#1a3a5c", parent=None):
-        super().__init__(parent)
-        self._color = hex_color
-        self._refresh_style()
-        self.setFixedSize(36, 28)
-        self.clicked.connect(self._show_color_menu)
-
-    def _refresh_style(self):
-        r, g, b = self._hex_to_rgb(self._color)
-        luminance = 0.299 * r + 0.587 * g + 0.114 * b
-        text_color = "#ffffff" if luminance < 128 else "#000000"
-        self.setStyleSheet(
-            f"background-color: {self._color}; color: {text_color}; "
-            f"border: 1px solid #aabbcc; border-radius: 4px; font-size: 9px;"
-        )
-        self.setText(self._color.upper())
-
-    def _show_color_menu(self):
-        menu = QMenu(self)
-        menu.setStyleSheet(
-            "QMenu { background-color: #1C2844; color: #ffffff; border: 1px solid #4a5d7a; }"
-            "QMenu::item { background-color: transparent; }"
-            "QMenu::item:selected { background-color: #2e7bc4; }"
-            "QMenu::separator { height: 1px; background: #4a5d7a; margin: 4px 8px; }"
-        )
-        for category, cat_colors in NUANCIER_COULEURS.items():
-            cat_menu = menu.addMenu(category)
-            cat_menu.setStyleSheet(menu.styleSheet())
-            for color in cat_colors:
-                action = QWidgetAction(cat_menu)
-                pixmap = QPixmap(20, 20)
-                pixmap.fill(QColor(color))
-                action.setIcon(QIcon(pixmap))
-                action.setData(color)
-                action.triggered.connect(lambda _, c=color: self._set_color(c))
-                cat_menu.addAction(action)
-
-        custom = menu.addAction("Couleur personnalisée…")
-        custom.triggered.connect(self._pick_custom_color)
-        menu.exec(self.mapToGlobal(self.rect().bottomLeft()))
-
-    def _pick_custom_color(self):
-        dlg = QColorDialog(QColor(self._color), self)
-        if dlg.exec():
-            self._set_color(dlg.selectedColor().name())
-
-    def _set_color(self, hex_color: str):
-        self._color = hex_color
-        self._refresh_style()
-        self.clicked.emit()
-
-    def color(self) -> str:
-        return self._color
-
-    def set_color(self, hex_color: str):
-        self._color = hex_color
-        self._refresh_style()
-
-    @staticmethod
-    def _hex_to_rgb(h: str):
-        h = h.lstrip("#")
-        return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
 
 
 # ── StyleTab ───────────────────────────────────────────────────────────────
@@ -110,25 +32,28 @@ class StyleTab(QWidget):
         root.setContentsMargins(12, 12, 12, 12)
         root.setSpacing(12)
 
-        # ── Couleurs ──
-        grp_colors = QGroupBox("Couleurs du document")
-        colors_layout = QVBoxLayout(grp_colors)
-        colors_layout.setSpacing(8)
+        # ── Page de garde ──
+        grp_cover = QGroupBox("Page de garde")
+        cover_layout = QVBoxLayout(grp_cover)
+        cover_layout.setSpacing(8)
 
-        def _color_row(label: str, default: str, attr: str):
-            row = QHBoxLayout()
-            row.addWidget(QLabel(label))
-            btn = ColorButton(default)
-            btn.clicked.connect(lambda: self._on_color_changed(attr))
-            row.addStretch()
-            row.addWidget(btn)
-            colors_layout.addLayout(row)
-            setattr(self, f"_btn_{attr}", btn)
+        row_title = QHBoxLayout()
+        row_title.addWidget(QLabel("Titre :"))
+        self._edit_doc_title = QLineEdit()
+        self._edit_doc_title.setPlaceholderText("Titre de la liasse")
+        self._edit_doc_title.textChanged.connect(self._push_to_state)
+        row_title.addWidget(self._edit_doc_title)
+        cover_layout.addLayout(row_title)
 
-        _color_row("Couleur principale :",      "#1C2844", "primary")
-        _color_row("Couleur accent :",           "#7891C7", "accent")
-        _color_row("Couleur complémentaire :",   "#2A3D66", "complement")
-        root.addWidget(grp_colors)
+        row_subtitle = QHBoxLayout()
+        row_subtitle.addWidget(QLabel("Sous-titre :"))
+        self._edit_doc_author = QLineEdit()
+        self._edit_doc_author.setPlaceholderText("BEE, BEH…")
+        self._edit_doc_author.textChanged.connect(self._push_to_state)
+        row_subtitle.addWidget(self._edit_doc_author)
+        cover_layout.addLayout(row_subtitle)
+
+        root.addWidget(grp_cover)
 
         # ── Typographie ──
         grp_typo = QGroupBox("Typographie")
@@ -238,9 +163,8 @@ class StyleTab(QWidget):
     def _load_from_state(self, _=None):
         self._loading = True
         gp = state_manager.gparams
-        self._btn_primary.set_color(gp.primary_color)
-        self._btn_accent.set_color(gp.accent_color)
-        self._btn_complement.set_color(gp.complement_color)
+        self._edit_doc_title.setText(getattr(gp, "doc_title", ""))
+        self._edit_doc_author.setText(getattr(gp, "doc_author", ""))
         self._spin_title.setValue(gp.title_font_size)
         self._spin_header.setValue(gp.header_font_size)
         self._chk_toc.setChecked(gp.show_toc)
@@ -270,9 +194,8 @@ class StyleTab(QWidget):
         if self._loading:
             return
         gp = state_manager.gparams
-        gp.primary_color    = self._btn_primary.color()
-        gp.accent_color     = self._btn_accent.color()
-        gp.complement_color = self._btn_complement.color()
+        gp.doc_title        = self._edit_doc_title.text().strip()
+        gp.doc_author       = self._edit_doc_author.text().strip()
         gp.title_font_size  = self._spin_title.value()
         gp.header_font_size = self._spin_header.value()
         gp.show_toc          = self._chk_toc.isChecked()

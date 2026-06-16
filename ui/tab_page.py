@@ -63,13 +63,13 @@ class PageTab(QWidget):
         layout.addWidget(grp_sheet)
 
         # ── Titre de la page ──────────────────────────────────────────────
-        grp_title = QGroupBox("Titre affiché dans le PDF")
-        title_layout = QHBoxLayout(grp_title)
-        self._edit_title = QLineEdit()
-        self._edit_title.setPlaceholderText("Laisser vide pour utiliser le nom de la feuille")
-        self._edit_title.textChanged.connect(self._push_page)
-        title_layout.addWidget(self._edit_title)
-        layout.addWidget(grp_title)
+        # grp_title = QGroupBox("Titre affiché dans le PDF")
+        # title_layout = QHBoxLayout(grp_title)
+        # self._edit_title = QLineEdit()
+        # self._edit_title.setPlaceholderText("Laisser vide pour utiliser le nom de la feuille")
+        # self._edit_title.textChanged.connect(self._push_page)
+        # title_layout.addWidget(self._edit_title)
+        # layout.addWidget(grp_title)
 
         # ── Options de page ───────────────────────────────────────────────
         grp_opts = QGroupBox("Marges et taille de police pour la page")
@@ -177,7 +177,7 @@ class PageTab(QWidget):
     # ── Helpers ─────────────────────────────────────────────────────────────
 
     def _set_enabled(self, on: bool):
-        for w in [self._edit_title, self._chk_show_title, self._spin_font, self._combo_table]:
+        for w in [self._chk_show_title, self._spin_font, self._combo_table]:
             w.setEnabled(on)
         for s in self._spins_margin.values():
             s.setEnabled(on)
@@ -211,11 +211,9 @@ class PageTab(QWidget):
         self._loading = True
 
         pp = state_manager.gparams.page_params.get(sheet_name, PageParams())
-        self._edit_title.setText(pp.sheet_title or "")
+        # self._edit_title.setText(pp.sheet_title or "")
         self._chk_show_title.setChecked(pp.show_sheet_title)
         self._spin_font.setValue(pp.font_size)
-        # self._spins_margin["top"].setValue(pp.margin_top)
-        # self._spins_margin["bottom"].setValue(pp.margin_bottom)
         self._spins_margin["left"].setValue(pp.margin_left)
         self._spins_margin["right"].setValue(pp.margin_right)
 
@@ -267,7 +265,7 @@ class PageTab(QWidget):
         if self._loading or not self._current_sheet:
             return
         pp = state_manager.gparams.page_params.get(self._current_sheet, PageParams())
-        pp.sheet_title      = self._edit_title.text().strip() or None
+        # pp.sheet_title      = self._edit_title.text().strip() or None
         pp.show_sheet_title = self._chk_show_title.isChecked()
         pp.font_size        = self._spin_font.value()
         # pp.margin_top       = self._spins_margin["top"].value()

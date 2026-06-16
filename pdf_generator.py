@@ -77,9 +77,26 @@ class PageParams:
     margin_right:     float = 15.0
     show_sheet_title: bool  = True
     orientation:      str   = "portrait"
-    sheet_title:      str | None = None   # None → nom de la feuille
+    sheet_title:      str | None = None   # None → nom de la feuille (déprécié, voir SheetSettings.display_name)
     # styles par tableau : clé = TableZone.name
     table_styles: dict[str, TableStyleParams] = field(default_factory=dict)
+
+
+# ── SheetSettings : réglages par page liés à l'onglet Document ───────────
+
+@dataclass
+class SheetSettings:
+    """
+    Réglages d'une page (feuille), persistés dans le profil JSON.
+    La clé de référencement dans GlobalParams.sheet_settings est SheetModel.name
+    (le nom ORIGINAL de la feuille Excel), qui ne change jamais — ce qui permet
+    de conserver le lien avec l'Excel même si l'ordre des pages est modifié
+    ou si l'utilisateur renomme l'affichage de la page.
+    """
+    include:      bool = True
+    page_order:   int  = 0
+    display_name: str | None = None   # nom affiché (titre de page + sommaire) ; None → nom Excel
+    footer_note:  str | None = None   # note affichée dans la marge inférieure de la page
 
 
 # ── GlobalParams : paramètres globaux du document ─────────────────────────
@@ -97,6 +114,11 @@ class GlobalParams:
     complement_color: str   = NUANCIER_COULEURS["Palette principale"][1]
     font_family:      str   = font_name
     page_params: dict[str, PageParams] = field(default_factory=dict)
+    # Réglages par page (inclusion, ordre, nom affiché, note de bas de page)
+    # clé = SheetModel.name (nom Excel original, stable)
+    sheet_settings: dict[str, SheetSettings] = field(default_factory=dict)
+    # Référence du tableau utilisé en page de garde : (sheet_name, table_name) ou None
+    table_intro_ref: tuple[str, str] | None = None
 
 
 # ── ChartSpec ──────────────────────────────────────────────────────────────
@@ -226,7 +248,16 @@ def _render_chart(spec: ChartSpec, table: TableZone) -> bytes | None:
 
 # ── Footer ─────────────────────────────────────────────────────────────────
 
-def _footer_fn(canvas, doc, gparams: GlobalParams):
+def _footer_fn(canvas, doc, gparams: GlobalParams, footer_map: dict):
+    """
+    Dessine le pied de page : numéro de page (droite), date de génération (gauche, page > 1),
+    et la note de bas de page propre à la feuille en cours (centrée), si définie.
+
+    footer_map : dict {page_number(int) -> footer_note(str)} rempli pendant la construction
+    du story (via PageCollector), pour savoir quelle note afficher sur quelle page.
+    Comme une feuille peut s'étendre sur plusieurs pages, on propage la note à toutes
+    les pages de la feuille (cf _build_sheet_story).
+    """
     canvas.saveState()
     canvas.setFont("Marianne", 7)
     canvas.setFillColor(colors.Color(0.5, 0.5, 0.5))
@@ -234,12 +265,17 @@ def _footer_fn(canvas, doc, gparams: GlobalParams):
         canvas.drawRightString(doc.pagesize[0] - 10 * mm, 8 * mm, f"Page {doc.page}")
     if gparams.date_in_footer and doc.page > 1:
         canvas.drawString(10 * mm, 8 * mm, f"Généré le {date.today().strftime('%d/%m/%Y')}")
+
+    note = footer_map.get(doc.page)
+    if note:
+        canvas.setFont("Marianne", 7)
+        canvas.drawCentredString(doc.pagesize[0] / 2, 8 * mm, note)
     canvas.restoreState()
 
 
 # ── Templates de page ──────────────────────────────────────────────────────
 
-def _build_page_templates(gparams: GlobalParams) -> list:
+def _build_page_templates(gparams: GlobalParams, footer_map: dict) -> list:
     templates = []
     for orient in ["portrait", "landscape"]:
         pp = PageParams(orientation=orient)
@@ -252,18 +288,40 @@ def _build_page_templates(gparams: GlobalParams) -> list:
         )
         pt = PageTemplate(
             id=orient, frames=[frame], pagesize=ps,
-            onPage=lambda c, d, gp=gparams: _footer_fn(c, d, gp),
+            onPage=lambda c, d, gp=gparams, fm=footer_map: _footer_fn(c, d, gp, fm),
         )
         templates.append(pt)
     return templates
 
 
+# ── Résolution du tableau d'introduction ──────────────────────────────────
+
+def _resolve_table_intro(model: WorkbookModel, gparams: GlobalParams):
+    """
+    Retourne (TableZone, TableStyleParams) pour le tableau référencé par
+    gparams.table_intro_ref = (sheet_name, table_name), ou (None, None) si
+    la référence est absente ou ne pointe plus vers un tableau existant.
+    """
+    ref = getattr(gparams, "table_intro_ref", None)
+    if not ref or not model:
+        return None, None
+    sheet_name, table_name = ref
+    for sheet in model.sheets:
+        if sheet.name == sheet_name:
+            for t in sheet.tables:
+                if t.name == table_name:
+                    pp  = gparams.page_params.get(sheet_name, PageParams())
+                    tsp = pp.table_styles.get(table_name, TableStyleParams())
+                    return t, tsp
+            break
+    return None, None
+
+
 # ── Page de garde ──────────────────────────────────────────────────────────
 
-def _make_cover_page(gparams, primary_color, accent_color, complement_color) -> list:
-    doc_title   = getattr(gparams, "doc_title",   "Titre du document")
-    doc_author  = getattr(gparams, "doc_author",  "Auteur non spécifié")
-    table_intro = getattr(gparams, "table_intro", None)
+def _make_cover_page(model, gparams, primary_color, accent_color, complement_color) -> list:
+    doc_title  = getattr(gparams, "doc_title",  "Titre du document")
+    doc_author = getattr(gparams, "doc_author", "Auteur non spécifié")
 
     cover_title_style = ParagraphStyle("CoverTitle",
         fontName="Marianne-Bold", fontSize=24,
@@ -282,19 +340,33 @@ def _make_cover_page(gparams, primary_color, accent_color, complement_color) -> 
         Paragraph(f"Date : {date.today().strftime('%d/%m/%Y')}", cover_date_style),
         Spacer(1, 10 * mm),
     ]
-    if table_intro:
+
+    table_intro, tsp_intro = _resolve_table_intro(model, gparams)
+    if table_intro is not None:
         try:
             default_pp = PageParams()
             avail_w = A4[0] - (default_pp.margin_left + default_pp.margin_right) * mm
+
+            tbl_primary    = _hex_to_rl(tsp_intro.primary_color)    if tsp_intro and tsp_intro.primary_color    else primary_color
+            tbl_complement = _hex_to_rl(tsp_intro.complement_color) if tsp_intro and tsp_intro.complement_color else complement_color
+            tbl_alt        = _hex_to_rl(tsp_intro.row_alt_color)    if tsp_intro and tsp_intro.row_alt_color    else None
+            tbl_hdr_txt    = _hex_to_rl(tsp_intro.header_text_color) if tsp_intro and tsp_intro.header_text_color else None
+            tbl_body_txt   = _hex_to_rl(tsp_intro.body_text_color)   if tsp_intro and tsp_intro.body_text_color   else None
+
             rl_tbl = make_rl_table(
                 table_intro, default_pp,
-                primary_color, accent_color, complement_color,
-                avail_w, table_style_params=None,
+                tbl_primary, accent_color, tbl_complement,
+                avail_w,
+                row_alt_color=tbl_alt,
+                header_text_color=tbl_hdr_txt,
+                body_text_color=tbl_body_txt,
+                table_style_params=tsp_intro,
             )
             if rl_tbl:
                 content += [Spacer(1, 8 * mm), rl_tbl]
         except Exception as e:
             print(f"[cover] table_intro render failed: {e}")
+
     content.append(PageBreak())
     return content
 
@@ -349,13 +421,23 @@ def generate_pdf(
     font_family      = getattr(gparams, "font_family", font_name)
 
     styles = getSampleStyleSheet()
-    # Les titres de page et sous-titres de section utilisent TOUJOURS les couleurs globales
     title_style = ParagraphStyle("LiasseTitle",
         parent=styles["Heading1"], fontSize=gparams.title_font_size,
         fontName=font_name, textColor=primary_color, spaceAfter=6, spaceBefore=0)
     section_style = ParagraphStyle("LiasseSection",
         parent=styles["Heading2"], fontSize=gparams.header_font_size,
         fontName=font_name, textColor=accent_color, spaceAfter=4, spaceBefore=8)
+
+    # ── Application de sheet_settings (include / page_order / display_name) ──
+    # sheet_settings est la source de vérité persistée dans le profil ; on la
+    # réplique sur les SheetModel pour piloter tri / filtre / titres.
+    settings_map = gparams.sheet_settings
+    for sheet in model.sheets:
+        ss = settings_map.get(sheet.name)
+        if ss is not None:
+            sheet.include      = ss.include
+            sheet.page_order   = ss.page_order
+            sheet.display_name = ss.display_name
 
     ordered_sheets = sorted(
         [s for s in model.sheets if s.include],
@@ -367,15 +449,25 @@ def generate_pdf(
     for cs in charts:
         charts_by_sheet.setdefault(cs.sheet_name, []).append(cs)
 
+    # footer_map est rempli pendant _build_sheet_story (passe 1) puis réutilisé
+    # tel quel en passe 2 (la pagination est identique entre les deux passes).
+    footer_map: dict[int, str] = {}
+
     def _build_sheet_story() -> list:
         story = []
         for sheet in ordered_sheets:
             pp      = gparams.page_params.get(sheet.name, PageParams())
             avail_w = A4[0] - (pp.margin_left + pp.margin_right) * mm
 
-            displayed_title = pp.sheet_title if pp.sheet_title else sheet.name
+            ss = settings_map.get(sheet.name, SheetSettings())
+            displayed_title = sheet.get_display_name()
+
             story.append(NextPageTemplate(pp.orientation))
-            story.append(PageCollector(sheet.name, page_map))
+
+            # PageCollector : enregistre le numéro de page de DÉBUT de la feuille,
+            # et propage la note de bas de page à toutes les pages couvertes par
+            # cette feuille (mis à jour lors de chaque appel à apply()).
+            story.append(_SheetFooterCollector(sheet.name, page_map, footer_map, ss.footer_note))
 
             if pp.show_sheet_title:
                 story.append(Paragraph(displayed_title, title_style))
@@ -386,10 +478,8 @@ def generate_pdf(
                 if not tz.data and not tz.headers:
                     continue
 
-                # Récupération du TableStyleParams (couleurs + row_styles)
                 tsp = pp.table_styles.get(tz.name, TableStyleParams())
 
-                # Résolution des couleurs du tableau (fallback sur global)
                 tbl_primary    = _hex_to_rl(tsp.primary_color)    if tsp.primary_color    else primary_color
                 tbl_complement = _hex_to_rl(tsp.complement_color) if tsp.complement_color else complement_color
                 tbl_alt        = _hex_to_rl(tsp.row_alt_color)    if tsp.row_alt_color    else None
@@ -426,19 +516,63 @@ def generate_pdf(
         return story
 
     def build_full_story() -> list:
-        toc_entries = [(page_map.get(s.name, 0), s.name) for s in ordered_sheets]
+        toc_entries = [(page_map.get(s.name, 0), s.get_display_name()) for s in ordered_sheets]
         return (
-            _make_cover_page(gparams, primary_color, accent_color, complement_color)
+            _make_cover_page(model, gparams, primary_color, accent_color, complement_color)
             + _make_sommaire(toc_entries, gparams, title_style, accent_color)
             + _build_sheet_story()
         )
 
-    # Passe 1 : collecte des numéros de page
-    doc1 = BaseDocTemplate(io.BytesIO(), pageTemplates=_build_page_templates(gparams), title="Liasse")
+    # Passe 1 : collecte des numéros de page (et de la footer_map)
+    doc1 = BaseDocTemplate(io.BytesIO(), pageTemplates=_build_page_templates(gparams, footer_map), title="Liasse")
     doc1.multiBuild(build_full_story())
 
-    # Passe 2 : génération finale
-    doc2 = BaseDocTemplate(output_path, pageTemplates=_build_page_templates(gparams), title="Liasse")
+    # Passe 2 : génération finale (footer_map déjà connue, pagination identique)
+    doc2 = BaseDocTemplate(output_path, pageTemplates=_build_page_templates(gparams, footer_map), title="Liasse")
     doc2.multiBuild(build_full_story())
 
     return output_path
+
+
+# ── Collecteur de page + note de bas de page ───────────────────────────────
+
+class _SheetFooterCollector(ActionFlowable):
+    """
+    Variante de PageCollector qui, en plus d'enregistrer le numéro de la première
+    page de la feuille dans page_map (pour le sommaire), propage la footer_note
+    de la feuille à TOUTES les pages qu'elle occupe.
+
+    ReportLab appelle apply() pour chaque page traversée par ce flowable lors
+    du re-flow (en réalité une seule fois au moment où le flowable est placé,
+    mais doc.page reflète la page courante à cet instant). Pour couvrir les
+    feuilles qui s'étendent sur plusieurs pages, on s'appuie sur le fait que
+    multiBuild() effectue un afterFlowable callback à chaque saut de page ;
+    ici on adopte une approche simple et robuste : on enregistre la page de
+    départ, et on remplit rétroactivement la plage [start, doc.page] à chaque
+    nouvel appel d'apply() pour une feuille différente (i.e. dès qu'on quitte
+    la feuille courante, on connaît sa dernière page = page précédente).
+    """
+    def __init__(self, sheet_name: str, page_map: dict, footer_map: dict, footer_note: str | None):
+        super().__init__()
+        self.sheet_name  = sheet_name
+        self.page_map    = page_map
+        self.footer_map  = footer_map
+        self.footer_note = footer_note
+
+    def apply(self, doc):
+        start_page = doc.page
+        self.page_map[self.sheet_name] = start_page
+
+        if self.footer_note:
+            # Marque au minimum la première page ; les pages suivantes de la même
+            # feuille seront couvertes via _extend_previous_sheet_footer ci-dessous.
+            self.footer_map[start_page] = self.footer_note
+
+        # Étend la note de la feuille précédente jusqu'à la page précédant celle-ci.
+        prev = getattr(doc, "_last_sheet_footer", None)
+        if prev is not None:
+            prev_note, prev_start = prev
+            if prev_note:
+                for p in range(prev_start, start_page):
+                    self.footer_map[p] = prev_note
+        doc._last_sheet_footer = (self.footer_note, start_page)

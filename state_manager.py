@@ -1,6 +1,7 @@
 """
 Gestionnaire d'état central — pattern Observer.
-Gère la sérialisation / désérialisation complète des RowStyle et TableStyleParams.
+Gère la sérialisation / désérialisation complète des RowStyle, TableStyleParams,
+SheetSettings et de la référence du tableau d'introduction.
 """
 import json
 import os
@@ -9,7 +10,10 @@ from dataclasses import dataclass, field
 from typing import Callable, Any
 
 from excel_parser import WorkbookModel, parse_workbook, load_mapping
-from pdf_generator import GlobalParams, PageParams, ChartSpec, TableStyleParams, RowStyle
+from pdf_generator import (
+    GlobalParams, PageParams, ChartSpec,
+    TableStyleParams, RowStyle, SheetSettings,
+)
 
 import util
 
@@ -51,7 +55,7 @@ class StateManager:
             except Exception as e:
                 print(f"[StateManager] listener error ({event}): {e}")
 
-    # ── Actions ────────────────────────────────────────────────────────────
+    # ── Chargement Excel ───────────────────────────────────────────────────
 
     def load_excel(self, path: str, mapping_path: str | None = None) -> bool:
         try:
@@ -65,9 +69,27 @@ class StateManager:
             self._state.workbook           = parse_workbook(path, mapping or None)
             self._state.current_excel_path = path
 
+            gp = self._state.gparams
+
             for sheet in self._state.workbook.sheets:
-                if sheet.name not in self._state.gparams.page_params:
-                    self._state.gparams.page_params[sheet.name] = PageParams()
+                # PageParams (style)
+                if sheet.name not in gp.page_params:
+                    gp.page_params[sheet.name] = PageParams()
+
+                # SheetSettings (document) — ne pas écraser si déjà présent (profil chargé avant Excel)
+                if sheet.name not in gp.sheet_settings:
+                    gp.sheet_settings[sheet.name] = SheetSettings(
+                        include=sheet.include,
+                        page_order=sheet.page_order,
+                        display_name=None,
+                        footer_note=None,
+                    )
+                else:
+                    # Appliquer les réglages du profil sur le SheetModel
+                    ss = gp.sheet_settings[sheet.name]
+                    sheet.include      = ss.include
+                    sheet.page_order   = ss.page_order
+                    sheet.display_name = ss.display_name
 
             self.emit("workbook_loaded", self._state.workbook)
             return True
@@ -75,12 +97,18 @@ class StateManager:
             self.emit("error", str(e))
             return False
 
+    # ── Ordre / inclusion des feuilles ─────────────────────────────────────
+
     def update_sheet_order(self, new_order: list[str]):
         if not self._state.workbook:
             return
         idx_map = {name: i for i, name in enumerate(new_order)}
         for sheet in self._state.workbook.sheets:
-            sheet.page_order = idx_map.get(sheet.name, sheet.page_order)
+            new_idx = idx_map.get(sheet.name, sheet.page_order)
+            sheet.page_order = new_idx
+            self._state.gparams.sheet_settings.setdefault(
+                sheet.name, SheetSettings()
+            ).page_order = new_idx
         self.emit("sheet_order_changed", new_order)
 
     def toggle_sheet_include(self, sheet_name: str, included: bool):
@@ -89,7 +117,34 @@ class StateManager:
         for sheet in self._state.workbook.sheets:
             if sheet.name == sheet_name:
                 sheet.include = included
+                self._state.gparams.sheet_settings.setdefault(
+                    sheet_name, SheetSettings()
+                ).include = included
         self.emit("sheet_visibility_changed", sheet_name)
+
+    # ── Nom affiché / note de bas de page ─────────────────────────────────
+
+    def set_display_name(self, sheet_name: str, display_name: str | None):
+        """Modifie le nom affiché d'une page (titre PDF + sommaire)."""
+        ss = self._state.gparams.sheet_settings.setdefault(sheet_name, SheetSettings())
+        ss.display_name = display_name or None
+        if self._state.workbook:
+            for sheet in self._state.workbook.sheets:
+                if sheet.name == sheet_name:
+                    sheet.display_name = ss.display_name
+                    break
+        self.emit("sheet_settings_changed", sheet_name)
+
+    def set_footer_note(self, sheet_name: str, note: str | None):
+        """Modifie la note de bas de page d'une page."""
+        ss = self._state.gparams.sheet_settings.setdefault(sheet_name, SheetSettings())
+        ss.footer_note = note or None
+        self.emit("sheet_settings_changed", sheet_name)
+
+    def get_sheet_settings(self, sheet_name: str) -> SheetSettings:
+        return self._state.gparams.sheet_settings.get(sheet_name, SheetSettings())
+
+    # ── PageParams (style) ─────────────────────────────────────────────────
 
     def update_page_params(self, sheet_name: str, pp: PageParams):
         self._state.gparams.page_params[sheet_name] = pp
@@ -109,15 +164,27 @@ class StateManager:
 
     # ── Titre / auteur ─────────────────────────────────────────────────────
 
-    def set_doc_title(self, title: str):  self._state.gparams.doc_title  = title
+    def set_doc_title(self, title: str):   self._state.gparams.doc_title  = title
     def set_doc_author(self, author: str): self._state.gparams.doc_author = author
     def get_doc_title(self)  -> str: return getattr(self._state.gparams, "doc_title",  "")
     def get_doc_author(self) -> str: return getattr(self._state.gparams, "doc_author", "")
 
+    # ── Tableau d'introduction (référence par nom) ─────────────────────────
+
+    def set_table_intro_ref(self, sheet_name: str | None, table_name: str | None):
+        """Enregistre la référence (sheet_name, table_name) du tableau d'intro."""
+        if sheet_name and table_name:
+            self._state.gparams.table_intro_ref = (sheet_name, table_name)
+        else:
+            self._state.gparams.table_intro_ref = None
+        self.emit("global_params_changed", None)
+
+    def get_table_intro_ref(self) -> tuple[str, str] | None:
+        return getattr(self._state.gparams, "table_intro_ref", None)
+
     # ── TableStyleParams ───────────────────────────────────────────────────
 
     def get_table_style(self, sheet_name: str, table_name: str) -> TableStyleParams:
-        """Retourne le TableStyleParams (crée les objets intermédiaires si absents)."""
         pp = self._state.gparams.page_params.setdefault(sheet_name, PageParams())
         return pp.table_styles.setdefault(table_name, TableStyleParams())
 
@@ -145,37 +212,43 @@ class StateManager:
     # ── Persistance JSON ───────────────────────────────────────────────────
 
     def save_profile(self, path: str):
-        gp     = self._state.gparams
-        gp_d   = dataclasses.asdict(gp)
+        gp = self._state.gparams
+
+        # ── GlobalParams (champs dataclass uniquement) ──
+        gp_fields = {f.name for f in dataclasses.fields(GlobalParams)}
+        gp_d = {f: getattr(gp, f) for f in gp_fields}
 
         # Attributs dynamiques (non-dataclass)
         gp_d["doc_title"]  = getattr(gp, "doc_title",  "")
         gp_d["doc_author"] = getattr(gp, "doc_author", "")
 
-        # table_intro → référence (sheet, table) au lieu de l'objet
-        table_intro = getattr(gp, "table_intro", None)
-        intro_ref   = None
-        if table_intro is not None and self._state.workbook:
-            for sheet in self._state.workbook.sheets:
-                for t in sheet.tables:
-                    if t is table_intro:
-                        intro_ref = {"sheet": sheet.name, "table": t.name}
-                        break
-                if intro_ref:
-                    break
-        gp_d["table_intro"] = intro_ref
+        # table_intro_ref : tuple → list (JSON-compatible)
+        ref = getattr(gp, "table_intro_ref", None)
+        gp_d["table_intro_ref"] = list(ref) if ref else None
 
-        # page_params : sérialisation complète (table_styles + row_styles)
+        # ── page_params : sérialisation TableStyleParams → RowStyle ──
         pp_serial = {}
         for sname, pp in gp.page_params.items():
-            pp_d = dataclasses.asdict(pp)
-            # row_styles : clés int → str (JSON n'accepte que des str comme clés)
-            for tname, tsp_d in pp_d.get("table_styles", {}).items():
+            pp_fields = {f.name for f in dataclasses.fields(PageParams)}
+            pp_d = {f: getattr(pp, f) for f in pp_fields if f != "table_styles"}
+            ts_serial = {}
+            for tname, tsp in pp.table_styles.items():
+                tsp_fields = {f.name for f in dataclasses.fields(TableStyleParams)}
+                tsp_d = {f: getattr(tsp, f) for f in tsp_fields if f != "row_styles"}
                 tsp_d["row_styles"] = {
-                    str(k): v for k, v in tsp_d.get("row_styles", {}).items()
+                    str(k): dataclasses.asdict(rs)
+                    for k, rs in tsp.row_styles.items()
                 }
+                ts_serial[tname] = tsp_d
+            pp_d["table_styles"] = ts_serial
             pp_serial[sname] = pp_d
         gp_d["page_params"] = pp_serial
+
+        # ── sheet_settings ──
+        ss_serial = {}
+        for sname, ss in gp.sheet_settings.items():
+            ss_serial[sname] = dataclasses.asdict(ss)
+        gp_d["sheet_settings"] = ss_serial
 
         profile = {
             "gparams": gp_d,
@@ -191,23 +264,27 @@ class StateManager:
         gp_data = profile.get("gparams", {})
 
         # Extraire les sous-structures avant de construire GlobalParams
-        pp_data        = gp_data.pop("page_params", {})
-        doc_title      = gp_data.pop("doc_title",   "")
-        doc_author     = gp_data.pop("doc_author",  "")
-        table_intro_ref = gp_data.pop("table_intro", None)
+        pp_data          = gp_data.pop("page_params",    {})
+        ss_data          = gp_data.pop("sheet_settings", {})
+        doc_title        = gp_data.pop("doc_title",      "")
+        doc_author       = gp_data.pop("doc_author",     "")
+        table_intro_ref  = gp_data.pop("table_intro_ref", None)
 
         gp_fields = {f.name for f in dataclasses.fields(GlobalParams)}
         gp = GlobalParams(**{k: v for k, v in gp_data.items() if k in gp_fields})
         gp.doc_title  = doc_title
         gp.doc_author = doc_author
 
-        # Reconstruction PageParams → TableStyleParams → RowStyle
-        pp_fields  = {f.name for f in dataclasses.fields(PageParams)}
+        # table_intro_ref : list → tuple
+        gp.table_intro_ref = tuple(table_intro_ref) if table_intro_ref else None
+
+        # ── Reconstruction PageParams → TableStyleParams → RowStyle ──
         tsp_fields = {f.name for f in dataclasses.fields(TableStyleParams)}
         rs_fields  = {f.name for f in dataclasses.fields(RowStyle)}
+        pp_fields  = {f.name for f in dataclasses.fields(PageParams) if f != "table_styles"}
 
         for sname, pp_dict in pp_data.items():
-            ts_data  = pp_dict.pop("table_styles", {})
+            ts_data = pp_dict.pop("table_styles", {})
             pp = PageParams(**{k: v for k, v in pp_dict.items() if k in pp_fields})
             for tname, tsp_dict in ts_data.items():
                 rs_data = tsp_dict.pop("row_styles", {})
@@ -219,22 +296,25 @@ class StateManager:
                 pp.table_styles[tname] = tsp
             gp.page_params[sname] = pp
 
-        # Résolution de table_intro
-        gp.table_intro = None
-        if table_intro_ref and self._state.workbook:
-            sn = table_intro_ref.get("sheet")
-            tn = table_intro_ref.get("table")
-            for sheet in self._state.workbook.sheets:
-                if sheet.name == sn:
-                    for t in sheet.tables:
-                        if t.name == tn:
-                            gp.table_intro = t
-                            break
-                    break
+        # ── Reconstruction SheetSettings ──
+        ss_fields = {f.name for f in dataclasses.fields(SheetSettings)}
+        for sname, ss_dict in ss_data.items():
+            gp.sheet_settings[sname] = SheetSettings(
+                **{k: v for k, v in ss_dict.items() if k in ss_fields}
+            )
 
         self._state.gparams = gp
 
-        # Charts
+        # Appliquer immédiatement sheet_settings aux SheetModel si le workbook est déjà chargé
+        if self._state.workbook:
+            for sheet in self._state.workbook.sheets:
+                ss = gp.sheet_settings.get(sheet.name)
+                if ss:
+                    sheet.include      = ss.include
+                    sheet.page_order   = ss.page_order
+                    sheet.display_name = ss.display_name
+
+        # ── Charts ──
         cf = {f.name for f in dataclasses.fields(ChartSpec)}
         self._state.charts = [
             ChartSpec(**{k: v for k, v in c.items() if k in cf})

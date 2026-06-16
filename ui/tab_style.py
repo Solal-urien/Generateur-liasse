@@ -1,17 +1,16 @@
 """
 Onglet Style :
-  Couleurs globales (primaire / accent / complémentaire),
-  typographie (taille titre, taille en-tête de section),
-  options document (sommaire, numérotation, date, tableau de garde).
-
-  Ces paramètres s'appliquent à TOUT le document.
-  Les couleurs par tableau sont configurables dans l'onglet Page.
-  Les styles de lignes individuels sont configurables dans l'onglet Lignes.
+  - Couleurs primaire / accent / complémentaire
+  - Tailles de police globales
+  - Options : numérotation, sommaire, date en pied de page
+  - Tableau de page de garde : référencé par (sheet_name, table_name)
+    et non plus par l'objet TableZone, afin que la mise en forme du tableau
+    (TableStyleParams) soit correctement appliquée à l'affichage en page de garde.
 """
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QGroupBox, QCheckBox, QDoubleSpinBox, QComboBox,
-    QColorDialog, QMenu, QWidgetAction, QPushButton,
+    QColorDialog, QMenu, QWidgetAction,
 )
 from PyQt6.QtGui import QColor, QIcon, QPixmap
 
@@ -19,61 +18,58 @@ from state_manager import state_manager
 from util import NUANCIER_COULEURS
 
 try:
-    from reportlab.platypus import Table as RLTable
+    from reportlab.platypus import Table
 except Exception:
-    RLTable = None
+    Table = None
 
 
-# ── ColorButton ───────────────────────────────────────────────────────────
+# ── ColorButton ────────────────────────────────────────────────────────────
 
 class ColorButton(QPushButton):
-    """Bouton affichant une couleur hex et permettant de la modifier via un nuancier."""
+    """Bouton qui affiche et permet de choisir une couleur hex parmi un nuancier ou via un sélecteur."""
 
     def __init__(self, hex_color: str = "#1a3a5c", parent=None):
         super().__init__(parent)
         self._color = hex_color
         self._refresh_style()
         self.setFixedSize(36, 28)
-        self.clicked.connect(self._show_menu)
-
-    # ── Style visuel ──────────────────────────────────────────────────────
+        self.clicked.connect(self._show_color_menu)
 
     def _refresh_style(self):
-        r, g, b   = self._hex_to_rgb(self._color)
+        r, g, b = self._hex_to_rgb(self._color)
         luminance = 0.299 * r + 0.587 * g + 0.114 * b
-        txt       = "#ffffff" if luminance < 128 else "#000000"
+        text_color = "#ffffff" if luminance < 128 else "#000000"
         self.setStyleSheet(
-            f"background-color:{self._color}; color:{txt}; "
-            f"border:1px solid #aabbcc; border-radius:4px; font-size:9px;"
+            f"background-color: {self._color}; color: {text_color}; "
+            f"border: 1px solid #aabbcc; border-radius: 4px; font-size: 9px;"
         )
         self.setText(self._color.upper())
 
-    # ── Menu nuancier ─────────────────────────────────────────────────────
-
-    def _show_menu(self):
+    def _show_color_menu(self):
         menu = QMenu(self)
         menu.setStyleSheet(
-            "QMenu{background:#1C2844;color:#fff;border:1px solid #4a5d7a;}"
-            "QMenu::item{background:transparent;}"
-            "QMenu::item:selected{background:#2e7bc4;}"
-            "QMenu::separator{height:1px;background:#4a5d7a;margin:4px 8px;}"
+            "QMenu { background-color: #1C2844; color: #ffffff; border: 1px solid #4a5d7a; }"
+            "QMenu::item { background-color: transparent; }"
+            "QMenu::item:selected { background-color: #2e7bc4; }"
+            "QMenu::separator { height: 1px; background: #4a5d7a; margin: 4px 8px; }"
         )
-        for category, clrs in NUANCIER_COULEURS.items():
-            sub = menu.addMenu(category)
-            sub.setStyleSheet(menu.styleSheet())
-            for color in clrs:
-                act = QWidgetAction(sub)
-                px  = QPixmap(20, 20)
-                px.fill(QColor(color))
-                act.setIcon(QIcon(px))
-                act.setData(color)
-                act.triggered.connect(lambda _, c=color: self._set_color(c))
-                sub.addAction(act)
+        for category, cat_colors in NUANCIER_COULEURS.items():
+            cat_menu = menu.addMenu(category)
+            cat_menu.setStyleSheet(menu.styleSheet())
+            for color in cat_colors:
+                action = QWidgetAction(cat_menu)
+                pixmap = QPixmap(20, 20)
+                pixmap.fill(QColor(color))
+                action.setIcon(QIcon(pixmap))
+                action.setData(color)
+                action.triggered.connect(lambda _, c=color: self._set_color(c))
+                cat_menu.addAction(action)
+
         custom = menu.addAction("Couleur personnalisée…")
-        custom.triggered.connect(self._pick_custom)
+        custom.triggered.connect(self._pick_custom_color)
         menu.exec(self.mapToGlobal(self.rect().bottomLeft()))
 
-    def _pick_custom(self):
+    def _pick_custom_color(self):
         dlg = QColorDialog(QColor(self._color), self)
         if dlg.exec():
             self._set_color(dlg.selectedColor().name())
@@ -83,8 +79,6 @@ class ColorButton(QPushButton):
         self._refresh_style()
         self.clicked.emit()
 
-    # ── API publique ──────────────────────────────────────────────────────
-
     def color(self) -> str:
         return self._color
 
@@ -93,12 +87,12 @@ class ColorButton(QPushButton):
         self._refresh_style()
 
     @staticmethod
-    def _hex_to_rgb(h: str) -> tuple[int, int, int]:
+    def _hex_to_rgb(h: str):
         h = h.lstrip("#")
         return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
 
 
-# ── StyleTab ──────────────────────────────────────────────────────────────
+# ── StyleTab ───────────────────────────────────────────────────────────────
 
 class StyleTab(QWidget):
 
@@ -116,85 +110,101 @@ class StyleTab(QWidget):
         root.setContentsMargins(12, 12, 12, 12)
         root.setSpacing(12)
 
-        # ── Couleurs globales ────────────────────────────────────────────
-        grp_colors = QGroupBox("Couleurs globales du document")
-        cl = QVBoxLayout(grp_colors)
-        cl.setSpacing(8)
+        # ── Couleurs ──
+        grp_colors = QGroupBox("Couleurs du document")
+        colors_layout = QVBoxLayout(grp_colors)
+        colors_layout.setSpacing(8)
 
-        hint = QLabel(
-            "Ces couleurs s'appliquent à tous les titres, sous-titres et tableaux.\n"
-            "Pour surcharger tableau par tableau, utilisez l'onglet Page."
-        )
-        hint.setStyleSheet("color:#5E5E5E; font-size:11px; font-style:italic;")
-        hint.setWordWrap(True)
-        cl.addWidget(hint)
-
-        def _color_row(label: str, default: str, btn_attr: str, slot):
+        def _color_row(label: str, default: str, attr: str):
             row = QHBoxLayout()
             row.addWidget(QLabel(label))
             btn = ColorButton(default)
-            btn.clicked.connect(slot)
-            setattr(self, btn_attr, btn)
+            btn.clicked.connect(lambda: self._on_color_changed(attr))
             row.addStretch()
             row.addWidget(btn)
-            cl.addLayout(row)
+            colors_layout.addLayout(row)
+            setattr(self, f"_btn_{attr}", btn)
 
-        _color_row("Couleur principale :",     "#1C2844", "_btn_primary",    lambda: self._push())
-        _color_row("Couleur accent :",          "#7891C7", "_btn_accent",     lambda: self._push())
-        _color_row("Couleur complémentaire :", "#2A3D66", "_btn_complement", lambda: self._push())
+        _color_row("Couleur principale :",      "#1C2844", "primary")
+        _color_row("Couleur accent :",           "#7891C7", "accent")
+        _color_row("Couleur complémentaire :",   "#2A3D66", "complement")
         root.addWidget(grp_colors)
 
-        # ── Typographie ──────────────────────────────────────────────────
+        # ── Typographie ──
         grp_typo = QGroupBox("Typographie")
-        tl = QVBoxLayout(grp_typo)
-        tl.setSpacing(8)
+        typo_layout = QVBoxLayout(grp_typo)
+        typo_layout.setSpacing(8)
 
-        def _spin_row(label: str, spin_attr: str, vmin: float, vmax: float, default: float):
-            row = QHBoxLayout()
-            row.addWidget(QLabel(label))
-            spin = QDoubleSpinBox()
-            spin.setRange(vmin, vmax)
-            spin.setValue(default)
-            spin.setSuffix(" pt")
-            spin.setSingleStep(0.5)
-            spin.valueChanged.connect(self._push)
-            setattr(self, spin_attr, spin)
-            row.addStretch()
-            row.addWidget(spin)
-            tl.addLayout(row)
+        row_ts = QHBoxLayout()
+        row_ts.addWidget(QLabel("Taille titre :"))
+        self._spin_title = QDoubleSpinBox()
+        self._spin_title.setRange(8, 36)
+        self._spin_title.setValue(14)
+        self._spin_title.setSuffix(" pt")
+        self._spin_title.setSingleStep(0.5)
+        self._spin_title.valueChanged.connect(self._push_to_state)
+        row_ts.addStretch()
+        row_ts.addWidget(self._spin_title)
+        typo_layout.addLayout(row_ts)
 
-        _spin_row("Taille titre :",             "_spin_title",  8,  36, 14.0)
-        _spin_row("Taille en-tête section :",   "_spin_header", 7,  24, 10.0)
+        row_hs = QHBoxLayout()
+        row_hs.addWidget(QLabel("Taille en-tête section :"))
+        self._spin_header = QDoubleSpinBox()
+        self._spin_header.setRange(7, 24)
+        self._spin_header.setValue(10)
+        self._spin_header.setSuffix(" pt")
+        self._spin_header.setSingleStep(0.5)
+        self._spin_header.valueChanged.connect(self._push_to_state)
+        row_hs.addStretch()
+        row_hs.addWidget(self._spin_header)
+        typo_layout.addLayout(row_hs)
         root.addWidget(grp_typo)
 
-        # ── Options document ─────────────────────────────────────────────
+        # ── Options ──
         grp_opts = QGroupBox("Options document")
-        ol = QVBoxLayout(grp_opts)
-        ol.setSpacing(6)
+        opts_layout = QVBoxLayout(grp_opts)
+        opts_layout.setSpacing(6)
 
-        def _chk(label: str, attr: str, default: bool):
-            c = QCheckBox(label)
-            c.setChecked(default)
-            c.stateChanged.connect(self._push)
-            setattr(self, attr, c)
-            ol.addWidget(c)
+        self._chk_toc = QCheckBox("Inclure un sommaire")
+        self._chk_toc.setChecked(True)
+        self._chk_toc.stateChanged.connect(self._push_to_state)
+        opts_layout.addWidget(self._chk_toc)
 
-        _chk("Inclure un sommaire",                  "_chk_toc",      True)
-        _chk("Numérotation des pages",               "_chk_page_num", True)
-        _chk("Date de génération en pied de page",   "_chk_date",     True)
-        _chk("Afficher un tableau sur la page de garde", "_chk_intro", False)
+        self._chk_page_num = QCheckBox("Numérotation des pages")
+        self._chk_page_num.setChecked(True)
+        self._chk_page_num.stateChanged.connect(self._push_to_state)
+        opts_layout.addWidget(self._chk_page_num)
+
+        self._chk_date = QCheckBox("Date de génération en pied de page")
+        self._chk_date.setChecked(True)
+        self._chk_date.stateChanged.connect(self._push_to_state)
+        opts_layout.addWidget(self._chk_date)
+
+        # Tableau de page de garde
+        self._chk_intro_table = QCheckBox("Afficher un tableau sur la page de garde")
+        self._chk_intro_table.setChecked(False)
+        self._chk_intro_table.stateChanged.connect(self._push_to_state)
+        opts_layout.addWidget(self._chk_intro_table)
 
         row_intro = QHBoxLayout()
         row_intro.addWidget(QLabel("Tableau de page de garde :"))
-        self._combo_intro = QComboBox()
-        self._combo_intro.setMaxVisibleItems(12)
-        self._combo_intro.currentIndexChanged.connect(self._push)
+        self._combo_intro_table = QComboBox()
+        self._combo_intro_table.setMaxVisibleItems(12)
+        self._combo_intro_table.currentIndexChanged.connect(self._push_to_state)
         row_intro.addStretch()
-        row_intro.addWidget(self._combo_intro)
-        ol.addLayout(row_intro)
-        self._refresh_intro_tables()
+        row_intro.addWidget(self._combo_intro_table)
+        opts_layout.addLayout(row_intro)
 
+        self._refresh_intro_tables()
         root.addWidget(grp_opts)
+
+        info = QLabel(
+            "Ces paramètres s'appliquent à l'ensemble du document.\n"
+            "Pour un réglage par page, utilisez l'onglet Page."
+        )
+        info.setStyleSheet("color: #464646; font-size: 11px; font-style: italic;")
+        info.setWordWrap(True)
+        root.addWidget(info)
         root.addStretch()
 
     # ── Sync état ────────────────────────────────────────────────────────────
@@ -204,19 +214,26 @@ class StyleTab(QWidget):
         self._load_from_state()
 
     def _refresh_intro_tables(self):
-        self._combo_intro.blockSignals(True)
-        self._combo_intro.clear()
-        self._combo_intro.addItem("Aucun tableau", None)
+        """
+        Peuple le combo avec les tableaux disponibles dans le workbook.
+        Chaque item stocke (sheet_name, table_name) comme data, ce qui est
+        la référence stable indépendante de l'objet TableZone.
+        """
+        self._combo_intro_table.blockSignals(True)
+        self._combo_intro_table.clear()
+        self._combo_intro_table.addItem("Aucun tableau", None)
+
         wb = getattr(state_manager, "workbook", None)
         if wb:
-            for sheet in getattr(wb, "sheets", []):
-                for t in getattr(sheet, "tables", []):
+            for sheet in wb.sheets:
+                for t in sheet.tables:
                     name = getattr(t, "name", None)
                     if name and name.startswith("Zone"):
                         continue
-                    label = getattr(t, "title", None) or name or "Tableau"
-                    self._combo_intro.addItem(label, t)
-        self._combo_intro.blockSignals(False)
+                    label = f"{sheet.name} / {name}" if name else f"{sheet.name} / Tableau"
+                    self._combo_intro_table.addItem(label, (sheet.name, name))
+
+        self._combo_intro_table.blockSignals(False)
 
     def _load_from_state(self, _=None):
         self._loading = True
@@ -229,28 +246,46 @@ class StyleTab(QWidget):
         self._chk_toc.setChecked(gp.show_toc)
         self._chk_page_num.setChecked(gp.show_page_numbers)
         self._chk_date.setChecked(gp.date_in_footer)
-        self._chk_intro.setChecked(bool(getattr(gp, "show_intro_table", False)))
-        table_intro = getattr(gp, "table_intro", None)
-        if table_intro is not None:
-            for i in range(self._combo_intro.count()):
-                if self._combo_intro.itemData(i) is table_intro:
-                    self._combo_intro.setCurrentIndex(i)
+
+        ref = getattr(gp, "table_intro_ref", None)
+        has_intro = ref is not None
+        self._chk_intro_table.setChecked(has_intro)
+
+        if ref:
+            for i in range(self._combo_intro_table.count()):
+                if self._combo_intro_table.itemData(i) == ref \
+                        or (isinstance(self._combo_intro_table.itemData(i), (list, tuple))
+                            and tuple(self._combo_intro_table.itemData(i)) == tuple(ref)):
+                    self._combo_intro_table.setCurrentIndex(i)
                     break
+        else:
+            self._combo_intro_table.setCurrentIndex(0)
+
         self._loading = False
 
-    def _push(self, *_):
+    def _on_color_changed(self, _which: str):
+        self._push_to_state()
+
+    def _push_to_state(self, *_):
         if self._loading:
             return
         gp = state_manager.gparams
-        gp.primary_color     = self._btn_primary.color()
-        gp.accent_color      = self._btn_accent.color()
-        gp.complement_color  = self._btn_complement.color()
-        gp.title_font_size   = self._spin_title.value()
-        gp.header_font_size  = self._spin_header.value()
+        gp.primary_color    = self._btn_primary.color()
+        gp.accent_color     = self._btn_accent.color()
+        gp.complement_color = self._btn_complement.color()
+        gp.title_font_size  = self._spin_title.value()
+        gp.header_font_size = self._spin_header.value()
         gp.show_toc          = self._chk_toc.isChecked()
         gp.show_page_numbers = self._chk_page_num.isChecked()
         gp.date_in_footer    = self._chk_date.isChecked()
-        gp.show_intro_table  = self._chk_intro.isChecked()
-        sel = self._combo_intro.currentData()
-        gp.table_intro = sel if gp.show_intro_table else None
+
+        if self._chk_intro_table.isChecked():
+            raw = self._combo_intro_table.currentData()
+            if isinstance(raw, (list, tuple)) and len(raw) == 2:
+                gp.table_intro_ref = (raw[0], raw[1])
+            else:
+                gp.table_intro_ref = None
+        else:
+            gp.table_intro_ref = None
+
         state_manager.emit("global_params_changed", None)

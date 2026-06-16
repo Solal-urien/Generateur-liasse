@@ -10,6 +10,14 @@ Principe de formatage :
   - La valeur 0 entier → chaîne vide (meilleur affichage).
   - Les années (1900-2100) sont renvoyées telles quelles (int), sans séparateur.
   - Le formatage pourcentage est laissé à l'utilisateur via les RowStyle (tab_line).
+
+Nommage des feuilles / pages :
+  - SheetModel.name est le nom original de la feuille Excel. C'est la clé technique
+    utilisée pour référencer page_params, table_styles, charts, sheet_settings, etc.
+    Elle ne doit jamais changer, même si l'ordre des pages est modifié.
+  - SheetModel.display_name est le nom affiché dans le PDF (titre de page + sommaire).
+    Si None, on retombe sur SheetModel.name. Modifiable par l'utilisateur dans
+    l'onglet Document, et persisté via GlobalParams.sheet_settings (cf pdf_generator).
 """
 import json
 import re
@@ -49,7 +57,7 @@ class TableZone:
 
 @dataclass
 class SheetModel:
-    name: str
+    name: str                       # nom ORIGINAL Excel — clé technique stable, ne pas modifier
     index: int
     tables: list[TableZone] = field(default_factory=list)
     named_ranges: dict[str, str] = field(default_factory=dict)
@@ -57,6 +65,10 @@ class SheetModel:
     dimensions: tuple[int, int] = (0, 0)
     include: bool = True
     page_order: int = 0
+    display_name: str | None = None  # nom affiché (titre de page + sommaire) ; None → name
+
+    def get_display_name(self) -> str:
+        return self.display_name if self.display_name else self.name
 
 
 @dataclass
@@ -103,7 +115,6 @@ def _is_excel_error(value: Any) -> bool:
     if not isinstance(value, str):
         return False
     s = value.strip()
-    # Set explicite + garde générique pour toute future erreur Excel
     return s in _EXCEL_ERRORS or (s.startswith("#") and len(s) <= 20)
 
 def _is_numeric_non_year(value: Any) -> bool:
@@ -143,13 +154,11 @@ def _fmt_number(num: float) -> str:
     int_part = int(rounded)
     dec_val  = rounded - int_part
 
-    # Partie entière avec séparateur de milliers
     int_str = f"{int_part:,}".replace(",", " ")
 
     if abs(dec_val) < 1e-9:
         return f"{sign}{int_str}"
 
-    # Partie décimale : jusqu'à 3 chiffres, sans zéros de queue
     dec_str = f"{rounded:.3f}".split(".")[1].rstrip("0")
     return f"{sign}{int_str},{dec_str}"
 
@@ -226,7 +235,6 @@ def _extract_table_data(
     except Exception:
         start_yr = 2025
 
-    # ── Lignes représentatives pour détecter les années / cumuls ──────────
     def _representative(idx: int) -> list:
         if idx >= len(rows):
             return []
@@ -279,7 +287,6 @@ def _extract_table_data(
                         pass
         return False
 
-    # ── Sélection des colonnes à conserver ────────────────────────────────
     keep: list[int] = []
     for idx, header in enumerate(rows[0]):
         col_vals = [r[idx] for r in data if idx < len(r)]
@@ -294,7 +301,6 @@ def _extract_table_data(
 
     filtered_headers = [headers[i] for i in keep]
 
-    # ── Formatage des données ─────────────────────────────────────────────
     filtered_data = []
     for row in data:
         formatted = [
@@ -302,7 +308,7 @@ def _extract_table_data(
             for i in keep
         ]
         filtered_data.append(formatted)
-    # ── Filtrage des lignes entièrement vides / erreurs ───────────────
+
     filtered_data = [
         row for row in filtered_data
         if any(not _is_empty_value(v) for v in row)
@@ -390,7 +396,6 @@ def parse_workbook(file_path: str, mapping: dict | None = None) -> WorkbookModel
                     )
 
         if mapping and sheet_name in mapping:
-            # Mapping manuel (prioritaire)
             for z in mapping[sheet_name].get("zones", []):
                 cr = _parse_ref(z["range"])
                 if cr:
@@ -402,7 +407,6 @@ def parse_workbook(file_path: str, mapping: dict | None = None) -> WorkbookModel
                         TableZone(name=z["name"], range=cr, source="manual", headers=h, data=d)
                     )
         elif not sheet_model.tables:
-            # Heuristique en fallback
             for i, cr in enumerate(_detect_heuristic_tables(ws)):
                 h, d = _extract_table_data(ws, cr)
                 sheet_model.tables.append(

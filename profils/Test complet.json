@@ -1,0 +1,81 @@
+{
+  "gparams": {
+    "title_font_size": 14.0,
+    "header_font_size": 10.0,
+    "show_page_numbers": true,
+    "show_toc": true,
+    "date_in_footer": true,
+    "start_year": 2025,
+    "primary_color": "#1C2844",
+    "accent_color": "#7891C7",
+    "complement_color": "#2A3D66",
+    "font_family": "Marianne",
+    "page_params": {
+      "Sheet1": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 15.0,
+        "margin_right": 15.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Zone_1": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "2": {
+                "visible": true,
+                "background_color": "#030303",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": "#2F2F2F",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": "#DD6115",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "21": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "doc_title": "",
+    "doc_author": "",
+    "table_intro": null
+  },
+  "charts": []
+}

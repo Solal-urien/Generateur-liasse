@@ -1,0 +1,2596 @@
+{
+  "gparams": {
+    "title_font_size": 14.0,
+    "header_font_size": 10.0,
+    "show_page_numbers": true,
+    "show_toc": true,
+    "date_in_footer": true,
+    "start_year": 2025,
+    "primary_color": "#1C2844",
+    "accent_color": "#7891C7",
+    "complement_color": "#2A3D66",
+    "font_family": "Marianne",
+    "page_params": {
+      "Intro": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": "Introduction",
+        "table_styles": {
+          "Tableau introductif": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": "#ffffff",
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 2
+              },
+              "2": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 3
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "0. Environnement macro": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": "Environnement macroéconomique",
+        "table_styles": {
+          "Environnement macroéconomique": {
+            "primary_color": "#DD6115",
+            "complement_color": "#EBA039",
+            "row_alt_color": "#FBECD7",
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "1": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "0": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": 9.0,
+                "number_format": "normal",
+                "decimal_places": 0
+              },
+              "6": {
+                "visible": true,
+                "background_color": "#FBECD7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": true,
+                "background_color": "#FBECD7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "12": {
+                "visible": true,
+                "background_color": "#ffffff",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "13": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": "#FBECD7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": "#ffffff",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "15": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "16": {
+                "visible": true,
+                "background_color": "#FBECD7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "19": {
+                "visible": true,
+                "background_color": "#ffffff",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "20": {
+                "visible": true,
+                "background_color": "#FBECD7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "22": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "23": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "24": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "25": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "27": {
+                "visible": true,
+                "background_color": "#FBECD7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "28": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "29": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "17": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "18": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "26": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "21": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "TDP simplifié": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": "Tableau de passage simplifié",
+        "table_styles": {
+          "Prélèvements obligatoires": {
+            "primary_color": "#030303",
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#2F2F2F",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": "#ffffff",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": "#9E9E9E",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": "#2F2F2F",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          },
+          "Recettes non fiscales": {
+            "primary_color": "#030303",
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#2F2F2F",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": "#2F2F2F",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": "#A5B5DA",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": "#9E9E9E",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "1.3. Tableau de passage PROV": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {}
+      },
+      "1.3. Tableau de passage N": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Tableau de passage du BEH26N2 au BEH26N3 - année 2026": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#7891C7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "italic",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": "#7891C7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": "#7891C7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": true,
+                "background_color": "#2A3D66",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": true,
+                "background_color": "#F3C688",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": "#EBA039",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "2.1. Tableau principal PO RFN": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {}
+      },
+      "2.2 Evolution du taux de PO": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {}
+      },
+      "3.1. Graphiques type d'impôts": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {}
+      },
+      "3.2. Miyazaki": {
+        "font_size": 6.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Contribution à l'écart à l'élasticité unitaire": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "2": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": false,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "13": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "12": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "0": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "15": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "16": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "17": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "18": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "19": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "3.3. Format HCFP": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 2.0,
+        "margin_right": 2.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Tableau des principaux impôts": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": "#ffffff",
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 0
+              },
+              "3": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "19": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "12": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "13": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "15": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "16": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "17": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "18": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "20": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "21": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "22": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "23": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "24": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "25": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "26": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "27": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "28": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "29": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "30": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "31": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "32": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "33": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "34": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "35": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "36": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "37": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "38": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "39": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "40": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "41": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "percent",
+                "decimal_places": 1
+              },
+              "42": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "43": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "44": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "45": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "46": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "47": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "48": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "49": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "50": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "51": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "52": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "53": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "54": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "55": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "56": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "57": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "58": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "59": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "60": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "61": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "62": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "63": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "64": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "65": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "66": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "67": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "68": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "69": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "70": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "71": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "72": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "73": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "74": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "75": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "76": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "77": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "4.1. Ecart en PO": {
+        "font_size": 7.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Ecart entre deux comptes : vision par principaux PO et RFN": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#2A3D66",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 0
+              }
+            }
+          }
+        }
+      },
+      "4.2. Ecart en RFN": {
+        "font_size": 5.5,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Ecarts en RFN": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#2A3D66",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 0
+              }
+            }
+          }
+        }
+      },
+      "4.3. Tableau de passage des RNF": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Présentation des RFN": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {}
+          },
+          "Tableau de passage des RNF": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "12": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "13": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "15": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "16": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "17": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "18": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "19": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "20": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "21": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "22": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "23": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "24": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "25": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "26": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "27": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "28": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "29": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "30": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "31": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "32": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "33": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "34": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "35": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "36": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "37": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "38": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "39": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "40": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "41": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "42": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "43": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "44": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "45": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "46": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "47": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "48": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "49": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "50": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "51": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "52": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "53": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "54": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "55": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "56": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "57": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "58": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "59": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "60": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "61": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "62": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "63": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "64": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "65": {
+                "visible": true,
+                "background_color": "#FFFFFF",
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "5. Ecart - ss-secteurs CN pt1": {
+        "font_size": 8.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Ecart entre deux comptes : vision par sous-secteurs et code de CN": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {}
+          }
+        }
+      },
+      "5. Ecart - ss-secteurs CN pt2": {
+        "font_size": 8.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Ecart entre deux comptes : vision par sous-secteurs et code de CN": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {}
+          }
+        }
+      },
+      "6. Crédit d'impôt": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {
+          "Crédits d'impôts en dépenses (en effet solde)": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "23": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": "#7891C7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "0": {
+                "visible": true,
+                "background_color": "#7891C7",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "12": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "13": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "15": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "17": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "16": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "18": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "19": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "20": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "21": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "22": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          },
+          "Crédits d'impôts en cash": {
+            "primary_color": null,
+            "complement_color": null,
+            "row_alt_color": null,
+            "header_text_color": null,
+            "body_text_color": null,
+            "row_styles": {
+              "0": {
+                "visible": true,
+                "background_color": "#2A3D66",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "1": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "2": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "3": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "4": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "5": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "6": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "7": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "8": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "9": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "10": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "11": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "12": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "13": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "14": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "15": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "16": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "17": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "18": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "19": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "20": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "21": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "22": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "23": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "24": {
+                "visible": true,
+                "background_color": "#385188",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "25": {
+                "visible": true,
+                "background_color": null,
+                "text_style": "normal",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              },
+              "26": {
+                "visible": true,
+                "background_color": "#D2DAEC",
+                "text_style": "bold",
+                "font_size": null,
+                "number_format": "normal",
+                "decimal_places": 1
+              }
+            }
+          }
+        }
+      },
+      "8. Recap des contentieux": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {}
+      },
+      "9. Principales MN": {
+        "font_size": 9.0,
+        "margin_top": 15.0,
+        "margin_bottom": 15.0,
+        "margin_left": 5.0,
+        "margin_right": 5.0,
+        "show_sheet_title": true,
+        "orientation": "portrait",
+        "sheet_title": null,
+        "table_styles": {}
+      }
+    },
+    "sheet_settings": {},
+    "table_intro_ref": null,
+    "doc_title": "Liasse POWER - FIPU 2",
+    "doc_author": "Compte BEH26N3 en écart au BEH26N2",
+    "table_intro": null
+  },
+  "charts": []
+}
